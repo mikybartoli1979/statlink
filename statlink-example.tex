@@ -1,0 +1,97 @@
+%% statlink-example.tex
+%% A minimal worked example for the statlink package.
+%%
+%% Compile TWICE to resolve all tagged values:
+%%   pdflatex statlink-example
+%%   pdflatex statlink-example
+
+\documentclass{article}
+\usepackage{statlink}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{\texttt{statlink} --- Worked Example}
+\author{Carlo Reggiani}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent This document demonstrates the main features of the
+\texttt{statlink} package. Values are tagged once in the tables below
+and retrieved automatically in the text. Recompiling after updating
+a table propagates all changes to the text without any manual editing.
+
+%% ── Table 1: OLS regression ──────────────────────────────────────────────────
+
+\section{OLS Regression}
+
+Table~\ref{tab:ols} reports a simple OLS regression of log wages on
+years of education and experience.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Variable    & Coefficient & Std.\ Error \\
+    \midrule
+    Education   & \tagvalue{ols:education}{0.082}   & 0.011 \\
+    Experience  & \tagvalue{ols:experience}{0.034}  & 0.008 \\
+    Constant    & \tagvalue{ols:constant}{1.245}    & 0.103 \\
+    \bottomrule
+  \end{tabular}
+  \caption{OLS estimates. Dependent variable: log wages.}
+  \label{tab:ols}
+\end{table}
+
+An additional year of education is associated with a
+\getvalue[transform=percent, round=1]{ols:education}\%
+increase in wages. The return to experience is
+\getvalue[transform=percent, round=1]{ols:experience}\%
+per additional year.
+
+%% ── Table 2: DID log-linear regression ───────────────────────────────────────
+
+\section{Difference-in-Differences}
+
+Table~\ref{tab:did} reports a difference-in-differences estimate of
+the effect of a training programme on earnings, using a log-linear
+specification. In this setting, the percentage effect is approximated
+by $\exp(\hat{\beta}) - 1$ rather than $\hat{\beta}$ directly.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Variable             & Coefficient & Std.\ Error \\
+    \midrule
+    Treatment $\times$ Post & \tagvalue{did:treatment}{0.143} & 0.032 \\
+    Post                 & \tagvalue{did:post}{0.021}      & 0.018 \\
+    Constant             & \tagvalue{did:constant}{6.832}  & 0.241 \\
+    \bottomrule
+  \end{tabular}
+  \caption{DID estimates. Dependent variable: log earnings.}
+  \label{tab:did}
+\end{table}
+
+The training programme increased earnings by approximately
+\getvalue[transform=expminusone, round=1, percent]{did:treatment},
+based on the coefficient of
+\getvalue[round=3]{did:treatment}
+on the interaction term.
+
+%% ── Error handling demonstration ─────────────────────────────────────────────
+
+\section{Error Handling}
+
+If a key is not found, \texttt{statlink} prints a visible warning
+in the text rather than failing silently:
+\getvalue{nonexistent:key}.
+
+If a non-numeric value is stored and a transform is requested,
+the raw value is printed safely without crashing:
+\tagvalue{note:result}{n.a.} is retrieved as
+\getvalue[transform=expminusone]{note:result}.
+
+\end{document}
