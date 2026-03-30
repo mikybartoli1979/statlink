@@ -202,5 +202,5 @@ Carlo Reggiani
 
 ## Acknowledgements
 
-This package was developed with the unvaluable assistance of
+This package was developed with the invaluable assistance of
 [Claude](https://www.anthropic.com) (Anthropic).
